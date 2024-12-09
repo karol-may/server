@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tablice</title>
+    <style>
+        table {
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Tablice</h1>
+    <h2>HTML</h2>
+    <input type="button" value="refresh" onclick="pobierzDane()">
+    <table border="1" id="tabela"></table>
+    <script>
+
+        let dane = [];
+
+        function createElementTd(value) {
+            let td = document.createElement("td");
+            td.innerText = value;
+            return td;
+        }
+        // DRY - Dont Repeat Yourself
+        
+   
+        async function pobierzDane() {            
+            let tabela = document.getElementById("tabela")
+            tabela.innerHTML = "";
+            try {
+                // Wykonanie żądania
+                let serverResponse = await fetch("http://localhost/server");
+
+                // Sprawdzanie odpowiedzi
+                if (!serverResponse.ok) {
+                    throw new Error(`Błąd HTTP: ${serverResponse.status}`);
+                }
+
+                // Parsowanie JSON
+                let dane = await serverResponse.json();
+
+                // Przetwarzanie danych
+                dane.forEach((value) => {
+                    let tr = document.createElement("tr");
+
+                    [value.imie, value.nazwisko, value.rok].forEach((dana) => {
+                        tr.appendChild(createElementTd(dana));
+                    });
+
+                    tabela.appendChild(tr);
+                });
+            } catch (error) {
+                console.error("Wystąpił błąd podczas pobierania danych:", error);
+            }
+        }
+
+
+    </script>
+</body>
+
+</html>
