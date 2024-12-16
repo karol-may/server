@@ -7,13 +7,37 @@
         exit();
     }
     
-    $sql = "SELECT * FROM dane";
+    $rok = $_GET['rok'];
+    $porowananie = $_GET['porownanie'];
+    switch ($porowananie) {
+        case 'eq':
+            $znak = '=';
+            break;
+        case 'lt':
+            $znak = '<';
+            break;
+        case 'gt':
+            $znak = '>';
+            break;
+        case 'le':
+            $znak = '<=';
+            break;
+        case 'ge':
+            $znak = '>=';
+            break;
+        
+        
+        default:
+            # code...
+            break;
+    }
+    
+
+    $sql = "SELECT * FROM dane WHERE rok $znak $rok ";
     $result = mysqli_query($connection,$sql);
 
     $dane = mysqli_fetch_all($result, MYSQLI_ASSOC);
-     
-
-
+    
     header('Content-type: application/json');    
     echo json_encode($dane);
 
