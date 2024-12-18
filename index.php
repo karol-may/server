@@ -7,8 +7,14 @@
         exit();
     }
     
-    $rok = $_GET['rok'];
-    $porowananie = $_GET['porownanie'];
+    $rok = isset($_GET['rok'])?$_GET['rok']:1900;
+
+    $porowananie = isset($_GET['porownanie'])?$_GET['porownanie']:"gt";
+
+    $fulltext = isset($_GET['fulltext'])?$_GET['fulltext']:"";
+    $rok_sort = isset($_GET['rok_sort'])?$_GET['rok_sort']:"ASC";
+
+
     switch ($porowananie) {
         case 'eq':
             $znak = '=';
@@ -33,7 +39,10 @@
     }
     
 
-    $sql = "SELECT * FROM dane WHERE rok $znak $rok ";
+    $sql = "SELECT * FROM dane WHERE rok $znak $rok 
+        AND ( `imie` LIKE '%$fulltext%' OR `nazwisko` LIKE '%$fulltext%' )
+        ORDER BY `rok` $rok_sort
+    ";
     $result = mysqli_query($connection,$sql);
 
     $dane = mysqli_fetch_all($result, MYSQLI_ASSOC);
